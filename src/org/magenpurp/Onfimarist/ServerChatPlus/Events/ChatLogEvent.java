@@ -1,4 +1,4 @@
-package org.magenpurp.Onfimarist.ServerChatPlus.Events;
+package org.magenpurp.onfimarist.ServerChatPlus.Events;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,16 +20,13 @@ public class ChatLogEvent implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent e) {
             if (!e.getMessage().startsWith("/")) {
                 fileCreate();
-                if (ChatEvent.chat)
-                    writeToFile(e);
-                else
-                    writeToFileDisabled(e);
+                writeToFile(e);
             }
     }
 
     private void fileCreate() {
         try {
-            new File("plugins/ImmortalChat/logs").mkdirs();
+            new File("plugins/ServerChatPlus").mkdirs();
             txtFile().createNewFile();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -49,22 +46,9 @@ public class ChatLogEvent implements Listener {
         }
     }
 
-    private void writeToFileDisabled(AsyncPlayerChatEvent e) {
-        try {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm:ss");
-            LocalDateTime hour = LocalDateTime.now();
-            FileWriter fw = new FileWriter(txtFile(), true);
-            fw.write("[Chat Disabled]" + "[" + format.format(hour) + "]" + e.getPlayer().getName() + " > " + e.getMessage());
-            fw.write("\r\n");
-            fw.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     private File txtFile() {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
-        return new File ("plugins/ImmortalChat/logs", format.format(date) + ".txt");
+        return new File ("plugins/ServerChatPlus", format.format(date) + ".txt");
     }
 }

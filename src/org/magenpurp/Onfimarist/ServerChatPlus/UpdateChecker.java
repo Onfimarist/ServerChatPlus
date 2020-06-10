@@ -1,4 +1,4 @@
-package org.magenpurp.Onfimarist.ServerChatPlus;
+package org.magenpurp.onfimarist.ServerChatPlus;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

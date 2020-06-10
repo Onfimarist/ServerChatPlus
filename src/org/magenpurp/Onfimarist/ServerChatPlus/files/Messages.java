@@ -1,4 +1,4 @@
-package org.magenpurp.Onfimarist.ServerChatPlus.files;
+package org.magenpurp.onfimarist.ServerChatPlus.files;
 
 import org.magenpurp.api.utils.FileManager;
 
@@ -22,7 +22,7 @@ public class Messages extends FileManager {
         addDefault(serverChatHasDisabled, "&7Server chat is already disabled.");
         addDefault(serverChatHasEnabled, "&7Server chat is already enabled.");
         addDefault(serverChatIsDisabled, "&7Server chat is disabled!");
-        addDefault(joinMessage, "&7Player %player% has joined the server!");
+        addDefault(joinMessage, "&7PLayer %player% has joined the server!");
         addDefault(leaveMessage, "&7Player %player% has left the server!");
         addDefault(tooFewArguments, "&7Too few arguments.");
         addDefault(noPermission, "&7You don't have access to this command.");

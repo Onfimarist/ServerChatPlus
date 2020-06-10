@@ -1,16 +1,16 @@
 name: ImmortalChat
 version: 0.4.0
 api-version: 1.13
-main: com.sotmonstudios.java.ImmortalChat.Main
+main: org.magenpurp.onfimarist.ServerChatPlus
 softdepend:
   - Vault
 permissions:
-  immortalchat.admin.togglechat:
+  scp.admin.togglechat:
     description: Gives permission to toggle chat.
     default: op
-  immortalchat.bypass.chatdisable:
+  scp.bypass.chatdisable:
     description: Gives right to bypass disabled chat.
     default: op
-  immortalcommand.commands:
+  scp.comamnds:
     description: Displays command list.
     default: op
