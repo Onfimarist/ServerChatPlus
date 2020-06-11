@@ -1,5 +1,9 @@
 package org.magenpurp.onfimarist.ServerChatPlus;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.magenpurp.onfimarist.ServerChatPlus.Events.ChatEvent;
 import org.magenpurp.onfimarist.ServerChatPlus.Events.JoinEvent;
 import org.magenpurp.onfimarist.ServerChatPlus.Events.LeaveEvent;
@@ -13,10 +17,13 @@ import org.magenpurp.api.versionsupport.VersionSupport;
 import org.magenpurp.onfimarist.ServerChatPlus.Events.ChatLogEvent;
 import org.magenpurp.onfimarist.ServerChatPlus.files.Messages;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-public class Main extends JavaPlugin {
+public class Main extends JavaPlugin implements PluginMessageListener {
 
     public static Messages messages;
     public static Chat chat = null;
@@ -65,4 +72,37 @@ public class Main extends JavaPlugin {
         return (chat != null);
     }
 
+    @Override
+    public void onPluginMessageReceived(String channel, Player p, byte[] message) {
+        if (!channel.equals("BungeeCord")) {
+            getLogger().info("Channel did not equal BungeeCord");
+            return;
+        }
+
+        ByteArrayDataInput in = ByteStreams.newDataInput(message);
+        String subChannel = in.readUTF();
+        getLogger().info("SubChannel = " + subChannel);
+        short len = in.readShort();
+        byte[] msgBytes = new byte[len];
+        in.readFully(msgBytes);
+
+        if (!subChannel.equals("ServerChatPlusMessage"))
+            return;
+
+        DataInputStream msgIn = new DataInputStream(new ByteArrayInputStream(msgBytes));
+        try {
+            String someData = msgIn.readUTF();
+            getLogger().info("SomeData = " + someData);
+            short someNumber = msgIn.readShort();
+
+            if (someNumber != 123) {
+                getLogger().warning("Crticial Erro. I have no idea what just happened.");
+                return;
+            }
+
+            p.chat(someData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
