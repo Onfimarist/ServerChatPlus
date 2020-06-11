@@ -2,6 +2,7 @@ package org.magenpurp.onfimarist.ServerChatPlus;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.magenpurp.onfimarist.ServerChatPlus.Events.ChatEvent;
@@ -34,12 +35,16 @@ public class Main extends JavaPlugin implements PluginMessageListener {
         VersionSupport versionSupport = MagenAPI.getVersionSupport();
         setupChat();
 
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+
         ServerChatPlusCommand serverChatPlusCommand = new ServerChatPlusCommand();
         serverChatPlusCommand.setAliases(Collections.singletonList("scp"));
         serverChatPlusCommand.addSubCommand(new ChatToggleSubCommand("toggle", new String[] {"scp.admin.togglechat"}), "Toggle Chat!");
         versionSupport.registerCommand(serverChatPlusCommand);
 
         getServer().getPluginManager().registerEvents(new ChatEvent(), this);
+        Bukkit.getLogger().info("Event registered.");
         getServer().getPluginManager().registerEvents(new ChatLogEvent(),this);
         getServer().getPluginManager().registerEvents(new JoinEvent(), this);
         getServer().getPluginManager().registerEvents(new LeaveEvent(), this);
@@ -48,13 +53,13 @@ public class Main extends JavaPlugin implements PluginMessageListener {
 
         Logger logger = this.getLogger();
 
-        new UpdateChecker(this, 72063).getVersion(version -> {
+        /*new UpdateChecker(this, 72063).getVersion(version -> {
             if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
                 logger.info("There is not a new update available.");
             } else {
                 logger.info("There is a new update available.");
             }
-        });
+        });*/
     }
 
     @Override
@@ -74,35 +79,30 @@ public class Main extends JavaPlugin implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player p, byte[] message) {
+        Bukkit.getLogger().info("Received message");
         if (!channel.equals("BungeeCord")) {
-            getLogger().info("Channel did not equal BungeeCord");
             return;
         }
 
         ByteArrayDataInput in = ByteStreams.newDataInput(message);
         String subChannel = in.readUTF();
         getLogger().info("SubChannel = " + subChannel);
-        short len = in.readShort();
-        byte[] msgBytes = new byte[len];
-        in.readFully(msgBytes);
 
-        if (!subChannel.equals("ServerChatPlusMessage"))
-            return;
+        if (subChannel.equals("ServerChatPlusMessage")) {
+            short len = in.readShort();
+            byte[] msgBytes = new byte[len];
+            in.readFully(msgBytes);
 
-        DataInputStream msgIn = new DataInputStream(new ByteArrayInputStream(msgBytes));
-        try {
-            String someData = msgIn.readUTF();
-            getLogger().info("SomeData = " + someData);
-            short someNumber = msgIn.readShort();
+            DataInputStream msgIn = new DataInputStream(new ByteArrayInputStream(msgBytes));
+            try {
+                String playerMessage = msgIn.readUTF();
+                getLogger().info("SomeData = " + playerMessage);
+                short readShort = msgIn.readShort();
 
-            if (someNumber != 123) {
-                getLogger().warning("Crticial Erro. I have no idea what just happened.");
-                return;
+                p.chat(playerMessage);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            p.chat(someData);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
