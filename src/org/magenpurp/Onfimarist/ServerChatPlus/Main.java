@@ -1,6 +1,8 @@
 package org.magenpurp.onfimarist.ServerChatPlus;
 
 import org.magenpurp.onfimarist.ServerChatPlus.Events.ChatEvent;
+import org.magenpurp.onfimarist.ServerChatPlus.Events.JoinEvent;
+import org.magenpurp.onfimarist.ServerChatPlus.Events.LeaveEvent;
 import org.magenpurp.onfimarist.ServerChatPlus.commands.ChatToggleSubCommand;
 import org.magenpurp.onfimarist.ServerChatPlus.commands.ServerChatPlusCommand;
 import net.milkbowl.vault.chat.Chat;
@@ -9,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.magenpurp.api.MagenAPI;
 import org.magenpurp.api.versionsupport.VersionSupport;
 import org.magenpurp.onfimarist.ServerChatPlus.Events.ChatLogEvent;
-import org.magenpurp.onfimarist.ServerChatPlus.Events.JoinLeaveEvent;
 import org.magenpurp.onfimarist.ServerChatPlus.files.Messages;
 
 import java.util.Collections;
@@ -33,7 +34,8 @@ public class Main extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new ChatEvent(), this);
         getServer().getPluginManager().registerEvents(new ChatLogEvent(),this);
-        getServer().getPluginManager().registerEvents(new JoinLeaveEvent(), this);
+        getServer().getPluginManager().registerEvents(new JoinEvent(), this);
+        getServer().getPluginManager().registerEvents(new LeaveEvent(), this);
 
         messages = new Messages();
 
